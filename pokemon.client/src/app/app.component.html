@@ -1,0 +1,63 @@
+﻿<h1 id="tableLabel">Pokemon</h1>
+
+<!-- <p>This component demonstrates fetching data from the server.</p> -->
+
+<!-- <p *ngIf="!forecasts">
+  <em
+    >Loading... Please refresh once the ASP.NET backend has started. See
+    <a href="https://aka.ms/jspsintegrationangular"
+      >https://aka.ms/jspsintegrationangular</a
+    >
+    for more details.</em
+  >
+</p> -->
+
+<div
+  style="
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  "
+>
+  <label for="sort-by">Sort By</label>
+  <select id="sort-by" [(ngModel)]="sortBy">
+    <option value="wins">Wins</option>
+    <option value="losses">Losses</option>
+    <option value="ties">Ties</option>
+    <option value="name">Name</option>
+    <option value="id">ID</option>
+  </select>
+
+  <label for="sort-direction">Sort Direction</label>
+  <select id="sort-direction" [(ngModel)]="sortDirection">
+    <option value="asc">Ascending</option>
+    <option value="desc">Descending</option>
+  </select>
+
+  <button type="submit" (click)="getPokemons()">Submit</button>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th>Ties</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let pokemon of pokemons">
+      <td>{{ pokemon.id }}</td>
+      <td>{{ pokemon.name }}</td>
+      <td>{{ pokemon.type }}</td>
+      <td>{{ pokemon.wins }}</td>
+      <td>{{ pokemon.losses }}</td>
+      <td>{{ pokemon.ties }}</td>
+    </tr>
+  </tbody>
+</table>
