@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
   getPokemons() {
     this.http
       .get<Pokemon[]>(
-        `/pokemon?sortBy=${this.sortBy}&sortDirection=${this.sortDirection}`
+        `/pokemon/tournament/statistics?sortBy=${this.sortBy}&sortDirection=${this.sortDirection}`
       )
       .subscribe(
         (result) => {

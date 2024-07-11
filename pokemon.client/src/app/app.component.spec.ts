@@ -61,7 +61,9 @@ describe('AppComponent', () => {
 
     component.ngOnInit();
 
-    const req = httpMock.expectOne('/pokemon?sortBy=wins&sortDirection=desc');
+    const req = httpMock.expectOne(
+      '/pokemon/tournament/statistics?sortBy=wins&sortDirection=desc'
+    );
     expect(req.request.method).toEqual('GET');
     req.flush(mockData);
 
@@ -92,7 +94,7 @@ describe('AppComponent', () => {
     ).nativeElement;
     button.click();
     const req = httpMock.expectOne(
-      `/pokemon?sortBy=${component.sortBy}&sortDirection=${component.sortDirection}`
+      `/pokemon/tournament/statistics?sortBy=${component.sortBy}&sortDirection=${component.sortDirection}`
     );
     expect(req.request.method).toBe('GET');
     req.flush(null);

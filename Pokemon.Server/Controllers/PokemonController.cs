@@ -4,7 +4,6 @@ using Newtonsoft.Json.Linq;
 namespace Pokemon.Server.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
     public class PokemonController : ControllerBase
     {
         private readonly HttpClient client = new() { BaseAddress = new Uri($"https://pokeapi.co") }; //reuse client
@@ -56,6 +55,7 @@ namespace Pokemon.Server.Controllers
         }
 
         [HttpGet]
+        [Route("pokemon/tournament/statistics")]
         public async Task<IActionResult> Get(string? sortBy, string? sortDirection = "desc")
         {
             if (string.IsNullOrEmpty(sortBy))
