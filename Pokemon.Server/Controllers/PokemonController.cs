@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
-namespace AngularApp1.Server.Controllers
+namespace Pokemon.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
@@ -11,6 +11,23 @@ namespace AngularApp1.Server.Controllers
         public PokemonController()
         {
             Console.WriteLine("Hello Pokemon!");
+        }
+
+        //returns the Pokemon object and its base experience
+        [NonAction]
+        public async Task<(Pokemon, int)> GetPokemon(int id)
+        {
+            using HttpResponseMessage response = await client.GetAsync($"api/v2/pokemon/{id}");
+            response.EnsureSuccessStatusCode();
+            string responseString = await response.Content.ReadAsStringAsync();
+            JObject json = JObject.Parse(responseString);
+            Pokemon pokemon = new Pokemon
+            {
+                Id = (int)json["id"]!,
+                Name = (string)json["name"]!,
+                Type = (string)json.SelectToken("types[0].type.name")!,
+            };
+            return (pokemon, (int)json["base_experience"]!);
         }
 
         private async Task<(List<Pokemon>, Dictionary<int, int>)> FetchPokemons()
@@ -24,17 +41,8 @@ namespace AngularApp1.Server.Controllers
             {
                 try
                 {
-                    using HttpResponseMessage response = await client.GetAsync($"api/v2/pokemon/{id}");
-                    response.EnsureSuccessStatusCode();
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    JObject json = JObject.Parse(responseString);
-                    Pokemon pokemon = new Pokemon
-                    {
-                        Id = (int)json["id"]!,
-                        Name = (string)json["name"]!,
-                        Type = (string)json.SelectToken("types[0].type.name")!,
-                    };
-                    baseExperiences[pokemon.Id] = (int)json["base_experience"]!;
+                    (Pokemon pokemon, int baseExperience) = await GetPokemon(id);
+                    baseExperiences[pokemon.Id] = baseExperience;
                     // Console.WriteLine(pokemon);
                     pokemons.Add(pokemon);
                 }
@@ -106,7 +114,7 @@ namespace AngularApp1.Server.Controllers
         {
             return $"Id = {Id}, Name = {Name}, Type = {Type}, Wins = {Wins}, Losses = {Losses}, Ties = {Ties}";
         }
-        private static List<(string, string)> rules = new List<(string, string)> {
+        private static readonly List<(string, string)> rules = new List<(string, string)> {
                 ("water", "fire"),
                 ("fire", "grass"),
                 ("grass", "electric"),

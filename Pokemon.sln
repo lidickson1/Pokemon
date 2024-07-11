@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pokemon.Server", "Pokemon.S
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "pokemon.client", "pokemon.client\pokemon.client.esproj", "{6604501C-6E89-46C6-96BD-E01E9BD40F2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonTest", "PokemonTest\PokemonTest.csproj", "{6AAA77A4-585A-41EC-825B-BD6FCA812034}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{6604501C-6E89-46C6-96BD-E01E9BD40F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6604501C-6E89-46C6-96BD-E01E9BD40F2A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6604501C-6E89-46C6-96BD-E01E9BD40F2A}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6AAA77A4-585A-41EC-825B-BD6FCA812034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AAA77A4-585A-41EC-825B-BD6FCA812034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AAA77A4-585A-41EC-825B-BD6FCA812034}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AAA77A4-585A-41EC-825B-BD6FCA812034}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
