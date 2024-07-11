@@ -1,5 +1,6 @@
 namespace PokemonTest;
 
+using Microsoft.AspNetCore.Mvc;
 using Pokemon.Server.Controllers;
 
 [TestClass]
@@ -79,5 +80,37 @@ public class PokemonControllerTest
 
         //invalid id should throw an error
         await Assert.ThrowsExceptionAsync<HttpRequestException>(() => controller.GetPokemon(-1));
+    }
+
+    [TestMethod]
+    public async Task TestGetSuccess()
+    {
+        PokemonController controller = new PokemonController();
+        var result = await controller.Get("wins", "desc");
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+        var okResult = (OkObjectResult)result;
+        Assert.AreEqual(okResult.StatusCode, 200);
+        Assert.IsInstanceOfType(okResult.Value, typeof(List<Pokemon>));
+    }
+
+    [TestMethod]
+    public async Task TestGetFail()
+    {
+        PokemonController controller = new PokemonController();
+        var result = await controller.Get(null);
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual(((BadRequestObjectResult)result).Value, "sortBy parameter is required");
+
+        result = await controller.Get("a");
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual(((BadRequestObjectResult)result).Value, "sortBy parameter is invalid");
+
+        result = await controller.Get("losses", "ascending");
+        Assert.IsNotNull(result);
+        Assert.IsInstanceOfType(result, typeof(BadRequestObjectResult));
+        Assert.AreEqual(((BadRequestObjectResult)result).Value, "sortDirection parameter is invalid");
     }
 }
