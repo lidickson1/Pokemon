@@ -1,4 +1,3 @@
-using System.Collections;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 
@@ -8,36 +7,42 @@ namespace AngularApp1.Server.Controllers
     [Route("[controller]")]
     public class PokemonController : ControllerBase
     {
-
+        private readonly HttpClient client = new() { BaseAddress = new Uri($"https://pokeapi.co") }; //reuse client
         public PokemonController()
         {
             Console.WriteLine("Hello Pokemon!");
         }
 
-        // [NonAction]
         private async Task<(List<Pokemon>, Dictionary<int, int>)> FetchPokemons()
         {
-            var ids = Enumerable.Range(1, 151).OrderBy(x => Random.Shared.Next()).Take(8).ToList();
-            HttpClient client = new() { BaseAddress = new Uri($"https://pokeapi.co") };
+            var ids = Enumerable.Range(1, 151) //generate random ids from 1 - 151
+                .OrderBy(x => Random.Shared.Next()) //shuffle them
+                .Take(8).ToList();
             List<Pokemon> pokemons = new List<Pokemon>();
             Dictionary<int, int> baseExperiences = new Dictionary<int, int>();
             foreach (int id in ids)
             {
-                // Console.WriteLine(id);
-                using HttpResponseMessage response = await client.GetAsync($"api/v2/pokemon/{id}");
-                //TODO handle errors
-                response.EnsureSuccessStatusCode();
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var json = JObject.Parse(jsonResponse);
-                Pokemon pokemon = new Pokemon
+                try
                 {
-                    Id = (int)json["id"],
-                    Name = (string)json["name"],
-                    Type = (string)json.SelectToken("types[0].type.name"),
-                };
-                baseExperiences[pokemon.Id] = (int)json["base_experience"];
-                // Console.WriteLine(pokemon);
-                pokemons.Add(pokemon);
+                    using HttpResponseMessage response = await client.GetAsync($"api/v2/pokemon/{id}");
+                    response.EnsureSuccessStatusCode();
+                    string responseString = await response.Content.ReadAsStringAsync();
+                    JObject json = JObject.Parse(responseString);
+                    Pokemon pokemon = new Pokemon
+                    {
+                        Id = (int)json["id"]!,
+                        Name = (string)json["name"]!,
+                        Type = (string)json.SelectToken("types[0].type.name")!,
+                    };
+                    baseExperiences[pokemon.Id] = (int)json["base_experience"]!;
+                    // Console.WriteLine(pokemon);
+                    pokemons.Add(pokemon);
+                }
+                catch (HttpRequestException e)
+                {
+                    Console.Error.WriteLine($"Error occurred with pokemon id {id}:");
+                    Console.Error.WriteLine(e);
+                }
             }
             return (pokemons, baseExperiences);
         }
@@ -74,10 +79,10 @@ namespace AngularApp1.Server.Controllers
             }
 
             //sort dynamically based on the sortBy (e.g. "wins" => the "Wins" property)
-            var property = typeof(Pokemon).GetProperty(char.ToUpper(sortBy[0]) + sortBy.Substring(1));
+            var property = typeof(Pokemon).GetProperty(char.ToUpper(sortBy[0]) + sortBy.Substring(1))!;
             pokemons.Sort((x, y) =>
             {
-                int compare = ((IComparable)property.GetValue(x)).CompareTo((IComparable)property.GetValue(y));
+                int compare = ((IComparable)property.GetValue(x)!).CompareTo((IComparable)property.GetValue(y)!);
                 if (sortDirection == "desc")
                 {
                     compare *= -1;
